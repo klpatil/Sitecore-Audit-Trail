@@ -185,7 +185,7 @@ HH&apos;:&apos;mm&apos;:&apos;ss&apos;.&apos;fff}" />
     </appender>
     
 ``` 
-**Now, Change connectionString attribute's value as per your environment. While doing so PLEASE REMEMBER WHILE ADDING Data Source Value use Double slash instead of Single Slash. i.e. Instead of (local)\SQE2K8R2 use (local)\\SQE2K8R2 ELSE IT WON'T WORK**
+**Now, Change connectionString attribute's value as per your environment. While doing so PLEASE REMEMBER WHILE ADDING Data Source Value use Double slash instead of Single Slash. i.e. Instead of (local)\SQE2K8R2 use (local)\\\SQE2K8R2 ELSE IT WON'T WORK**
 
 **Also, Default bufferSize value is 512. But we recommend having it 1 during initial configuration. Else you've to wait for a while to see affect of your changes. Once all good. Then would suggest changing this value as per your need.**
 3. Add Appender Reference. We are getting closed. You've added Appender. Now, as you know we need to add this Appender in root for that find `<appender-ref ref="LogFileAppender"/>` in **Web.Config** and add following tag after that tag:
@@ -193,7 +193,8 @@ HH&apos;:&apos;mm&apos;:&apos;ss&apos;.&apos;fff}" />
 ``` config
 <appender-ref ref="SCBasicsAuditTrailDBAppender" /> 
 ```
-So, It should look like following:
+So, It should look like following: 
+
 ``` config
 <root>
       <priority value="DEBUG"/>
@@ -201,7 +202,8 @@ So, It should look like following:
       <appender-ref ref="SCBasicsAuditTrailDBAppender" />
     </root>
 ```
-4. That's it! Enjoy! :-)
+
+**Go ahead and start enjoying SCAuditTrail!**
 
 ##Troubleshooting
 If it's not working for you. Then would recommend verify steps given above. [Better to get other pair of eyes!] And still if all looks good then do add following configuration in your Web.Config file before </configuration>. Pleas make sure you modify **<DATAFOLDERPATH>**
