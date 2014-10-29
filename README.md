@@ -21,7 +21,7 @@ Sitecore Audit Trail (SCAuditTrail) allows users to see Sitecore Audit Trail -- 
 
 ##How to Download, Install and Configure?
 
-> Just a note : Please don't get bored while doing configuration steps. They are Just one time steps!
+> Just a note : I know there are lot of configuration change. But trust me. It's worth doing and it will be worth once you do it!
 
 1. Download Sitecore Package from Packages\V1 folder Install it using Sitecore Installation Wizard.
 2. Database related changes:
