@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Sitecore-audit-trail by klpatil</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Sitecore-audit-trail</h1>
+        <h2>This Tool allows users to see Sitecore Audit Trail -- Who did What changes and When?</h2>
+        <a href="https://github.com/klpatil/Sitecore-Audit-Trail" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="sitecore-audit-trail" class="anchor" href="#sitecore-audit-trail"><span class="octicon octicon-link"></span></a>Sitecore Audit Trail</h1>
+
+<p>Sitecore Audit Trail (SCAuditTrail) allows users to see Sitecore Audit Trail -- Who did What changes and When?</p>
+
+<p><img src="https://sitecorebasics.files.wordpress.com/2014/10/scaudittrail-v1.gif" alt="Sitecore Audit Trail" title="Sitecore Audit Trail"></p>
+
+<h2>
+<a name="main-features" class="anchor" href="#main-features"><span class="octicon octicon-link"></span></a>Main Features</h2>
+
+<ol>
+<li>Answers following questions:
+
+<ol>
+<li>Who did change on particular item?</li>
+<li>When it happened?</li>
+<li>What all actions happened on particular day?</li>
+</ol>
+</li>
+<li>Does all tracking in back end - No effect on performance! [Uses power of log4net Appenders]</li>
+<li>Shows actions at Item Level and Site Level</li>
+<li>You can do search, pagination, and sorting!</li>
+<li>Fully Configurable</li>
+<li>No code changes required to do audit tracking</li>
+<li>Security has been applied -- User needs to be logged in to access it.</li>
+<li>Accessible from Context Menu of an Item And Review Tab</li>
+</ol>
+
+<h2>
+<a name="how-to-download-install-and-configure" class="anchor" href="#how-to-download-install-and-configure"><span class="octicon octicon-link"></span></a>How to Download, Install and Configure?</h2>
+
+<blockquote>
+<p>Just a note : Please don't get bored while doing configuration steps. They are Just one time steps!</p>
+</blockquote>
+
+<ol>
+<li>Download Sitecore Package from Packages\V1 folder Install it using Sitecore Installation Wizard.</li>
+<li>
+<p>Database related changes:</p>
+
+<ol>
+<li>We will need a separate Database to store all Audit Entries. To do that download and run SQL\Create-Database-v1.sql script. [Before running if you need to do any changes to script, please do it. Please avoid changing Database Name. And because of some reason you need to that. Then you need to download source and do changes at DataAccessLevel. As we are using LinqToSQL]</li>
+<li>Now, Database is created. We need to have a table to store data. To do that download and run SQL\Create-Table-v1.sql script it will create Logs Table with required columns.</li>
+</ol>
+</li>
+<li>
+<p>Do following configurations [If Copying from Web.Config opened in Visual Studio makes your life easier, Please feel free to Download Web.Config from here and copy following details from that file directly] :</p>
+
+<ol>
+<li>Add SCAuditTrail DB entry in ConnectionStrings.Config:</li>
+</ol>
+</li>
+</ol>
+
+<pre lang="config"><code>&lt;add name="SCAuditTrailConnectionString"
+           connectionString="Data Source=&lt;YOURSQLINSTANCENAME&gt;;Initial Catalog=SCAuditTrail;User ID=&lt;SQLUSERNAME&gt;;Password=&lt;SQLPASSWORD&gt;" providerName="System.Data.SqlClient" /&gt;
+</code></pre>
+
+<p><strong>Now, Change connectionString attribute's value as per your environment.</strong>
+2. Add Appender Settings : To do that Open Web.Config file and find <code>&lt;appender name="PublishingLogFileAppender"</code> add below configurations once <strong>PublishingLogFileAppender</strong> appender ends i.e. <code>&lt;/appender&gt;</code> :</p>
+
+<pre lang="config"><code>  &lt;!--type="log4net.Appender.ADONetAppender, Sitecore.Logging" &gt;--&gt;
+    &lt;appender name="SCBasicsAuditTrailDBAppender" type="SCBasics.AuditTrail.Appender.SitecoreDatabaseLogAppender,
+              SCBasics.AuditTrail" &gt;
+      &lt;!-- Filter items where message field start with 'AUDIT....' --&gt;
+      &lt;filter type="log4net.Filter.StringMatchFilter"&gt;
+        &lt;regexToMatch value="^AUDIT" /&gt;
+      &lt;/filter&gt;
+
+      &lt;!-- Deny all other items --&gt;
+      &lt;filter type="log4net.Filter.DenyAllFilter" /&gt;
+      &lt;!--his is because logs are buffered until a given buffersize is reached.
+      The default value is 512, but you can lower this by modifying the following line of code--&gt;
+      &lt;bufferSize value="1" /&gt;
+      &lt;param name="ConnectionType" value="System.Data.SqlClient.SqlConnection, System.Data, Version=2.0.0.0, 
+
+Culture=neutral, PublicKeyToken=b77a5c561934e089" /&gt;
+      &lt;!--Double SLASH is Very Important--&gt;
+      &lt;param name="ConnectionString" value="user id=&lt;SQLUSERNAME&gt;;password=&lt;SQLPASSWORD&gt;;Data 
+
+Source=&lt;SQLINSTANCENAME&gt;;Database=SCAuditTrail" /&gt;
+      &lt;!--&lt;param name="CommandText" value="INSERT INTO Log ([Date],[Thread],[Level],[Logger],[Message]) VALUES 
+
+(@log_date, @thread, @log_level, @logger, @message)" /&gt;--&gt;
+      &lt;param name="CommandText" value="INSERT INTO Logs ([Date],[Thread],[Level],[Logger],[Message],[Exception], 
+
+[SCUser], [SCAction], [SCItemPath], [SCLanguage] , [SCVersion] , [SCItemId], [SiteName],[SCMisc]) VALUES (@log_date, 
+
+@thread, @log_level, @logger, @message, @exception, @scuser,  @scaction, @scitempath, @sclanguage, @scversion, 
+
+@scitemid, @sitename, @scmisc)" /&gt;
+      &lt;param name="Parameter"&gt;
+        &lt;param name="ParameterName" value="@log_date" /&gt;
+        &lt;param name="DbType" value="DateTime" /&gt;
+        &lt;param name="Layout" type="log4net.Layout.PatternLayout"&gt;
+          &lt;param name="ConversionPattern" value="%d{yyyy&amp;apos;-&amp;apos;MM&amp;apos;-&amp;apos;dd 
+
+HH&amp;apos;:&amp;apos;mm&amp;apos;:&amp;apos;ss&amp;apos;.&amp;apos;fff}" /&gt;
+        &lt;/param&gt;
+      &lt;/param&gt;
+      &lt;param name="Parameter"&gt;
+        &lt;param name="ParameterName" value="@thread" /&gt;
+        &lt;param name="DbType" value="String" /&gt;
+        &lt;param name="Size" value="255" /&gt;
+        &lt;param name="Layout" type="log4net.Layout.PatternLayout"&gt;
+          &lt;param name="ConversionPattern" value="%t" /&gt;
+        &lt;/param&gt;
+      &lt;/param&gt;
+      &lt;param name="Parameter"&gt;
+        &lt;param name="ParameterName" value="@log_level" /&gt;
+        &lt;param name="DbType" value="String" /&gt;
+        &lt;param name="Size" value="50" /&gt;
+        &lt;param name="Layout" type="log4net.Layout.PatternLayout"&gt;
+          &lt;param name="ConversionPattern" value="%p" /&gt;
+        &lt;/param&gt;
+      &lt;/param&gt;
+      &lt;param name="Parameter"&gt;
+        &lt;param name="ParameterName" value="@logger" /&gt;
+        &lt;param name="DbType" value="String" /&gt;
+        &lt;param name="Size" value="255" /&gt;
+        &lt;param name="Layout" type="log4net.Layout.PatternLayout"&gt;
+          &lt;param name="ConversionPattern" value="%c" /&gt;
+        &lt;/param&gt;
+      &lt;/param&gt;
+      &lt;param name="Parameter"&gt;
+        &lt;param name="ParameterName" value="@message" /&gt;
+        &lt;param name="DbType" value="String" /&gt;
+        &lt;param name="Size" value="4000" /&gt;
+        &lt;param name="Layout" type="log4net.Layout.PatternLayout"&gt;
+          &lt;param name="ConversionPattern" value="%m" /&gt;
+        &lt;/param&gt;
+      &lt;/param&gt;
+      &lt;param name="Parameter"&gt;
+        &lt;param name="ParameterName" value="@exception" /&gt;
+        &lt;dbType value="String" /&gt;
+        &lt;size value="2000" /&gt;
+        &lt;layout type="log4net.Layout.ExceptionLayout" /&gt;
+      &lt;/param&gt;
+      &lt;param name="Parameter"&gt;
+        &lt;param name="ParameterName" value="@scuser" /&gt;
+        &lt;dbType value="String" /&gt;
+        &lt;size value="255" /&gt;
+        &lt;layout type="SCBasics.AuditTrail.Log4NetLayout.PropertyLayout,SCBasics.AuditTrail"&gt;
+          &lt;param name="PropertyName" value="scuser" /&gt;
+        &lt;/layout&gt;
+      &lt;/param&gt;
+      &lt;param name="Parameter"&gt;
+        &lt;param name="ParameterName" value="@scaction" /&gt;
+        &lt;dbType value="String" /&gt;
+        &lt;size value="255" /&gt;
+        &lt;layout type="SCBasics.AuditTrail.Log4NetLayout.PropertyLayout,SCBasics.AuditTrail"&gt;
+          &lt;param name="PropertyName" value="scaction" /&gt;
+        &lt;/layout&gt;
+      &lt;/param&gt;
+      &lt;param name="Parameter"&gt;
+        &lt;param name="ParameterName" value="@scitempath" /&gt;
+        &lt;dbType value="String" /&gt;
+        &lt;size value="255" /&gt;
+        &lt;layout type="SCBasics.AuditTrail.Log4NetLayout.PropertyLayout,SCBasics.AuditTrail"&gt;
+          &lt;param name="PropertyName" value="scitempath" /&gt;
+        &lt;/layout&gt;
+      &lt;/param&gt;
+      &lt;param name="Parameter"&gt;
+        &lt;param name="ParameterName" value="@sclanguage" /&gt;
+        &lt;dbType value="String" /&gt;
+        &lt;size value="255" /&gt;
+        &lt;layout type="SCBasics.AuditTrail.Log4NetLayout.PropertyLayout,SCBasics.AuditTrail"&gt;
+          &lt;param name="PropertyName" value="sclanguage" /&gt;
+        &lt;/layout&gt;
+      &lt;/param&gt;
+      &lt;param name="Parameter"&gt;
+        &lt;param name="ParameterName" value="@scversion" /&gt;
+        &lt;dbType value="String" /&gt;
+        &lt;size value="255" /&gt;
+        &lt;layout type="SCBasics.AuditTrail.Log4NetLayout.PropertyLayout,SCBasics.AuditTrail"&gt;
+          &lt;param name="PropertyName" value="scversion" /&gt;
+        &lt;/layout&gt;
+      &lt;/param&gt;      
+      &lt;param name="Parameter"&gt;
+        &lt;param name="ParameterName" value="@scitemid" /&gt;
+        &lt;dbType value="String" /&gt;
+        &lt;size value="38" /&gt;
+        &lt;layout type="SCBasics.AuditTrail.Log4NetLayout.PropertyLayout,SCBasics.AuditTrail"&gt;
+          &lt;param name="PropertyName" value="scitemid" /&gt;
+        &lt;/layout&gt;
+      &lt;/param&gt;
+      &lt;param name="Parameter"&gt;
+        &lt;param name="ParameterName" value="@sitename" /&gt;
+        &lt;dbType value="String" /&gt;
+        &lt;size value="255" /&gt;
+        &lt;layout type="SCBasics.AuditTrail.Log4NetLayout.PropertyLayout,SCBasics.AuditTrail"&gt;
+          &lt;param name="PropertyName" value="sitename" /&gt;
+        &lt;/layout&gt;
+      &lt;/param&gt;
+      &lt;param name="Parameter"&gt;
+        &lt;param name="ParameterName" value="@scmisc" /&gt;
+        &lt;dbType value="String" /&gt;
+        &lt;size value="255" /&gt;
+        &lt;layout type="SCBasics.AuditTrail.Log4NetLayout.PropertyLayout,SCBasics.AuditTrail"&gt;
+          &lt;param name="PropertyName" value="scmisc" /&gt;
+        &lt;/layout&gt;
+      &lt;/param&gt;
+    &lt;/appender&gt;
+
+</code></pre>
+
+<p><strong>Now, Change connectionString attribute's value as per your environment. While doing so PLEASE REMEMBER WHILE ADDING Data Source Value use Double slash instead of Single Slash. i.e. Instead of (local)\SQE2K8R2 use (local)\\SQE2K8R2 ELSE IT WON'T WORK</strong></p>
+
+<p><strong>Also, Default bufferSize value is 512. But we recommend having it 1 during initial configuration. Else you've to wait for a while to see affect of your changes. Once all good. Then would suggest changing this value as per your need.</strong>
+3. Add Appender Reference. We are getting closed. You've added Appender. Now, as you know we need to add this Appender in root for that find <code>&lt;appender-ref ref="LogFileAppender"/&gt;</code> in <strong>Web.Config</strong> and add following tag after that tag:</p>
+
+<pre lang="config"><code>&lt;appender-ref ref="SCBasicsAuditTrailDBAppender" /&gt; 
+</code></pre>
+
+<p>So, It should look like following: </p>
+
+<pre lang="config"><code>&lt;root&gt;
+      &lt;priority value="DEBUG"/&gt;
+      &lt;appender-ref ref="LogFileAppender"/&gt;
+      &lt;appender-ref ref="SCBasicsAuditTrailDBAppender" /&gt;
+    &lt;/root&gt;
+</code></pre>
+
+<p><strong>Go ahead and start enjoying SCAuditTrail!</strong></p>
+
+<h2>
+<a name="troubleshooting" class="anchor" href="#troubleshooting"><span class="octicon octicon-link"></span></a>Troubleshooting</h2>
+
+<p>If it's not working for you. Then would recommend verify steps given above. [Better to get other pair of eyes!] And still if all looks good then do add following configuration in your Web.Config file before . Pleas make sure you modify <strong></strong>
+token as per your environment. </p>
+
+<pre lang="config"><code>&lt;system.diagnostics&gt;
+    &lt;trace autoflush="true" indentsize="4"&gt;
+      &lt;listeners&gt;
+        &lt;add name="myListener" type="System.Diagnostics.TextWriterTraceListener"
+             initializeData="&lt;DATAFOLDERPATH&gt;\error.log" /&gt;
+        &lt;remove name="Default" /&gt;
+      &lt;/listeners&gt;
+    &lt;/trace&gt;
+  &lt;/system.diagnostics&gt;
+</code></pre>
+
+<p>Request Site again and check error.log. It will reveal the <strong>REAL</strong> Error.</p>
+
+<h2>
+<a name="how-it-works" class="anchor" href="#how-it-works"><span class="octicon octicon-link"></span></a>How It Works?</h2>
+
+<p>Basically this module is inspired from following links:</p>
+
+<ol>
+<li><a href="http://sdn.sitecore.net/scrapbook/how%20to%20make%20sitecore%206%20write%20audit%20log%20to%20its%20own%20file.aspx">http://sdn.sitecore.net/scrapbook/how%20to%20make%20sitecore%206%20write%20audit%20log%20to%20its%20own%20file.aspx</a></li>
+<li><a href="http://sitecoreblog.alexshyba.com/2010/07/sitecore-logging-write-it-to-sql.html">http://sitecoreblog.alexshyba.com/2010/07/sitecore-logging-write-it-to-sql.html</a></li>
+</ol>
+
+<p>It uses power of Log4Net's ADO.Net Appender. As you know Sitecore uses log4Net for logging. So, using Log4NetAppender recording only AUDIT records in Database. And then using Sitecore command integrated it with CE. Simple!</p>
+
+<h2>
+<a name="road-map" class="anchor" href="#road-map"><span class="octicon octicon-link"></span></a>Road Map</h2>
+
+<p><strong>This is one of my dream module</strong> I've uploaded 4-5 modules on Sitecore MarketPlace. But I think this one beats all my earlier modules [<em>Life is all about breaking your own records</em>]. While working on it. Had lot of ideas. Most of them implemented and then at one point had to stop. Because Best is the enemy of Good and I learn during my experience. it's good to follow <strong><em>YAGNI [You Aren't Gonna Need It]</em></strong> Principle : <a href="http://www.hanselman.com%20/blog/analysisparalysisoverthinkingandknowingtoomuchtojustcode.aspx">http://www.hanselman.com
+/blog/analysisparalysisoverthinkingandknowingtoomuchtojustcode.aspx</a></p>
+
+<blockquote>
+<p>But I've listed down all my ideas and open for ideas from here. As we live in the democratic world. Would like to know from you (Yes, You!) Which feature you want first to be implemented or added. You can do that from here : <a href="http://tinyurl.com/SCAuditTrailIdeas">http://tinyurl.com/SCAuditTrailIdeas</a></p>
+</blockquote>
+
+<p>And would be happy, rather than me working on all your ideas, You would like to do a pull request and start working on your idea. Then I must say it's a Nobel !dea! Just do it!</p>
+
+<h2>
+<a name="known-issues" class="anchor" href="#known-issues"><span class="octicon octicon-link"></span></a>Known issues</h2>
+
+<ol>
+<li>If you open a publish dialog and close it, without publishing. Then also it does an entry of Publish Item.</li>
+<li>Restore Item entry is not getting caught as of now.</li>
+</ol>
+
+<p><strong>But for this you can add your own custom event hooks subscribing for the events which are not working fine. And making sure you do - Audit Trail entries as per your need then rest all should work automatically!</strong></p>
+
+<blockquote>
+<p>Found any bug? Got suggestion/feedback/comment, Share it here!</p>
+</blockquote>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/klpatil/Sitecore-Audit-Trail/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/klpatil/Sitecore-Audit-Trail/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/klpatil/Sitecore-Audit-Trail"></a> is maintained by <a href="https://github.com/klpatil">klpatil</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-56249602-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
