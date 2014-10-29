@@ -86,8 +86,11 @@
            connectionString="Data Source=&lt;YOURSQLINSTANCENAME&gt;;Initial Catalog=SCAuditTrail;User ID=&lt;SQLUSERNAME&gt;;Password=&lt;SQLPASSWORD&gt;" providerName="System.Data.SqlClient" /&gt;
 </code></pre>
 
-<p><strong>Now, Change connectionString attribute's value as per your environment.</strong>
-2. Add Appender Settings : To do that Open Web.Config file and find <code>&lt;appender name="PublishingLogFileAppender"</code> add below configurations once <strong>PublishingLogFileAppender</strong> appender ends i.e. <code>&lt;/appender&gt;</code> :</p>
+<p><strong>Now, Change connectionString attribute's value as per your environment.</strong></p>
+
+<ol>
+<li>Add Appender Settings : To do that Open Web.Config file and find <code>&lt;appender name="PublishingLogFileAppender"</code> add below configurations once <strong>PublishingLogFileAppender</strong> appender ends i.e. <code>&lt;/appender&gt;</code> :</li>
+</ol>
 
 <pre lang="config"><code>  &lt;!--type="log4net.Appender.ADONetAppender, Sitecore.Logging" &gt;--&gt;
     &lt;appender name="SCBasicsAuditTrailDBAppender" type="SCBasics.AuditTrail.Appender.SitecoreDatabaseLogAppender,
@@ -236,8 +239,11 @@ HH&amp;apos;:&amp;apos;mm&amp;apos;:&amp;apos;ss&amp;apos;.&amp;apos;fff}" /&gt;
 
 <p><strong>Now, Change connectionString attribute's value as per your environment. While doing so PLEASE REMEMBER WHILE ADDING Data Source Value use Double slash instead of Single Slash. i.e. Instead of (local)\SQE2K8R2 use (local)\\SQE2K8R2 ELSE IT WON'T WORK</strong></p>
 
-<p><strong>Also, Default bufferSize value is 512. But we recommend having it 1 during initial configuration. Else you've to wait for a while to see affect of your changes. Once all good. Then would suggest changing this value as per your need.</strong>
-3. Add Appender Reference. We are getting closed. You've added Appender. Now, as you know we need to add this Appender in root for that find <code>&lt;appender-ref ref="LogFileAppender"/&gt;</code> in <strong>Web.Config</strong> and add following tag after that tag:</p>
+<p><strong>Also, Default bufferSize value is 512. But we recommend having it 1 during initial configuration. Else you've to wait for a while to see affect of your changes. Once all good. Then would suggest changing this value as per your need.</strong></p>
+
+<ol>
+<li>Add Appender Reference. We are getting closed. You've added Appender. Now, as you know we need to add this Appender in root for that find <code>&lt;appender-ref ref="LogFileAppender"/&gt;</code> in <strong>Web.Config</strong> and add following tag after that tag:</li>
+</ol>
 
 <pre lang="config"><code>&lt;appender-ref ref="SCBasicsAuditTrailDBAppender" /&gt; 
 </code></pre>
@@ -256,7 +262,7 @@ HH&amp;apos;:&amp;apos;mm&amp;apos;:&amp;apos;ss&amp;apos;.&amp;apos;fff}" /&gt;
 <h2>
 <a name="troubleshooting" class="anchor" href="#troubleshooting"><span class="octicon octicon-link"></span></a>Troubleshooting</h2>
 
-<p>If it's not working for you. Then would recommend verify steps given above. [Better to get other pair of eyes!] And still if all looks good then do add following configuration in your Web.Config file before . Pleas make sure you modify <strong></strong>
+<p>If it's not working for you. Then would recommend verify steps given above. [Better to get other pair of eyes!] And still if all looks good then do add following configuration in your Web.Config file before <code>&lt;/configuration&gt;</code> Pleas make sure you modify <strong></strong>
 token as per your environment. </p>
 
 <pre lang="config"><code>&lt;system.diagnostics&gt;
