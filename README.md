@@ -37,7 +37,8 @@ Sitecore Audit Trail (SCAuditTrail) allows users to see Sitecore Audit Trail -- 
 ``` 
 
 **Now, Change connectionString attribute's value as per your environment.**
-2. Add Appender Settings : To do that Open Web.Config file and find `<appender name="PublishingLogFileAppender"` add below configurations once **PublishingLogFileAppender** appender ends i.e. `</appender>` :
+
+ 2. Add Appender Settings : To do that Open Web.Config file and find `<appender name="PublishingLogFileAppender"` add below configurations once **PublishingLogFileAppender** appender ends i.e. `</appender>` :
 
 
 ``` config
@@ -188,7 +189,8 @@ HH&apos;:&apos;mm&apos;:&apos;ss&apos;.&apos;fff}" />
 **Now, Change connectionString attribute's value as per your environment. While doing so PLEASE REMEMBER WHILE ADDING Data Source Value use Double slash instead of Single Slash. i.e. Instead of (local)\SQE2K8R2 use (local)\\\SQE2K8R2 ELSE IT WON'T WORK**
 
 **Also, Default bufferSize value is 512. But we recommend having it 1 during initial configuration. Else you've to wait for a while to see affect of your changes. Once all good. Then would suggest changing this value as per your need.**
-3. Add Appender Reference. We are getting closed. You've added Appender. Now, as you know we need to add this Appender in root for that find `<appender-ref ref="LogFileAppender"/>` in **Web.Config** and add following tag after that tag:
+
+ 3. Add Appender Reference. We are getting closed. You've added Appender. Now, as you know we need to add this Appender in root for that find `<appender-ref ref="LogFileAppender"/>` in **Web.Config** and add following tag after that tag:
  
 ``` config
 <appender-ref ref="SCBasicsAuditTrailDBAppender" /> 
@@ -206,7 +208,7 @@ So, It should look like following:
 **Go ahead and start enjoying SCAuditTrail!**
 
 ##Troubleshooting
-If it's not working for you. Then would recommend verify steps given above. [Better to get other pair of eyes!] And still if all looks good then do add following configuration in your Web.Config file before </configuration>. Pleas make sure you modify **<DATAFOLDERPATH>**
+If it's not working for you. Then would recommend verify steps given above. [Better to get other pair of eyes!] And still if all looks good then do add following configuration in your Web.Config file before `</configuration>` Pleas make sure you modify **<DATAFOLDERPATH>**
 token as per your environment. 
 
 ``` config
@@ -246,4 +248,5 @@ And would be happy, rather than me working on all your ideas, You would like to 
 **But for this you can add your own custom event hooks subscribing for the events which are not working fine. And making sure you do - Audit Trail entries as per your need then rest all should work automatically!**
 
 >Found any bug? Got suggestion/feedback/comment, Share it here!
+
 
