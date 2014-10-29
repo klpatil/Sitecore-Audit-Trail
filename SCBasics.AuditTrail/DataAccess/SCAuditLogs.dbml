@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="SCAuditTrail" Class="SCAuditLogsDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="ConnectionString" ConnectionString="Data Source=HI2\SQE2K8R2;Initial Catalog=SCAuditTrail;User ID=sa;Password=123456" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Logs" Member="Logs">
+    <Type Name="Log">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Thread" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="[Level]" Member="Level" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="Logger" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Message" Type="System.String" DbType="VarChar(4000) NOT NULL" CanBeNull="false" />
+      <Column Name="Exception" Type="System.String" DbType="VarChar(2000)" CanBeNull="true" />
+      <Column Name="SCUser" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="SCAction" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="SCItemPath" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="SCLanguage" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="SCVersion" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="SCItemId" Type="System.String" DbType="VarChar(38)" CanBeNull="true" />
+      <Column Name="SiteName" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="SCMisc" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+    </Type>
+  </Table>
+</Database>
