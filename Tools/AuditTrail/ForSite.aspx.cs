@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Configuration;
 
 namespace SC7.Web.Tools.AuditTrail
 {
@@ -21,7 +22,7 @@ namespace SC7.Web.Tools.AuditTrail
         private void LoadSiteAuditTrailDetails()
         {
             SCAuditLogsDataContext scAuditLogsDataContext =
-                new SCAuditLogsDataContext();
+                new SCAuditLogsDataContext(ConfigurationManager.ConnectionStrings["SCAuditTrailConnectionString"].ConnectionString);
             
             IOrderedQueryable<Log> logs =
                 scAuditLogsDataContext.Logs.Where(x => 
