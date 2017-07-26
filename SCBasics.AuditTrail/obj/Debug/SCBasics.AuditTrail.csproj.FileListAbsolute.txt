@@ -1,0 +1,8 @@
+D:\Git\Sitecore-Audit-Trail\SCBasics.AuditTrail\obj\Debug\SCBasics.AuditTrail.csprojResolveAssemblyReference.cache
+D:\Git\Sitecore-Audit-Trail\SCBasics.AuditTrail\bin\Debug\SCBasics.AuditTrail.dll.config
+D:\Git\Sitecore-Audit-Trail\SCBasics.AuditTrail\bin\Debug\SCBasics.AuditTrail.dll
+D:\Git\Sitecore-Audit-Trail\SCBasics.AuditTrail\bin\Debug\SCBasics.AuditTrail.pdb
+D:\Git\Sitecore-Audit-Trail\SCBasics.AuditTrail\bin\Debug\Sitecore.Kernel.dll
+D:\Git\Sitecore-Audit-Trail\SCBasics.AuditTrail\bin\Debug\Sitecore.Logging.dll
+D:\Git\Sitecore-Audit-Trail\SCBasics.AuditTrail\obj\Debug\SCBasics.AuditTrail.dll
+D:\Git\Sitecore-Audit-Trail\SCBasics.AuditTrail\obj\Debug\SCBasics.AuditTrail.pdb
